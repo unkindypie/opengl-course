@@ -20,10 +20,8 @@
 // Window dimensions
 const GLint WIDTH = 800, HEIGHT = 600;
 const float toRadians = M_PI / 180;
-GLuint Shader, unifromModel, uniformProjection;
 
 std::vector<Mesh*> meshlist;
-class::Shader *shader = new class::Shader();
 std::vector<class::Shader*> shaderlist;
 
 bool direction = true;
@@ -83,66 +81,6 @@ void createObjects(){
 
     meshlist.push_back(new Mesh());
     meshlist[meshlist.size() - 1]->createMesh(vertices, indeces, 12, 12);
-}
-
-void addShader(GLuint program, const char * shaderCode, GLenum shaderType) {
-    GLuint theShader = glCreateShader(shaderType);
-    //т.к. glShaderSource может работать с несколькими строками, а у нас одна, то надо
-    //загнать ее в массив(и длины строк тоже)
-    const GLchar * code[1];
-
-    code[0] = shaderCode;
-    GLint codeLength[1];
-    codeLength[0] = strlen(code[0]);
-
-    glShaderSource(theShader, 1, code, codeLength);
-    glCompileShader(theShader);
-    //обработка ошибок
-    GLint result;
-    GLchar eLog[1024] = { 0 };
-
-    glGetShaderiv(theShader, GL_COMPILE_STATUS, &result);
-    if(!result){
-        glGetShaderInfoLog(theShader, sizeof(eLog), NULL, eLog);
-        printf("error compiling %d shader :\n %s\n", shaderType, eLog);
-        return;
-    }
-    glAttachShader(program, theShader);
-}
-
-void compileShaders(){
-    //создание шейдера(возвращает id, сам шейдер лежит на видюхе)
-    Shader = glCreateProgram();
-    if(!Shader) {
-        printf("error creating shader program");
-        return;
-    }
-    addShader(Shader, vShader, GL_VERTEX_SHADER);
-    addShader(Shader, fShader, GL_FRAGMENT_SHADER);
-    GLint result;
-    GLchar eLog[1024] = { 0 };
-
-    //финальная линковка
-    glLinkProgram(Shader);
-    //обработка ошибок
-    glGetProgramiv(Shader, GL_LINK_STATUS, &result);
-    if(!result){
-        glGetProgramInfoLog(Shader, sizeof(eLog), NULL, eLog);
-        printf("error linking program:\n %s\n", eLog);
-        return;
-    }
-    //валидация шейдера
-    glValidateProgram(Shader);
-    //обработка ошибок
-    glGetProgramiv(Shader, GL_VALIDATE_STATUS, &result);
-    if(!result){
-        glGetProgramInfoLog(Shader, sizeof(eLog), NULL, eLog);
-        printf("error validating program:\n %s\n", eLog);
-        return;
-    }
-    //получаю место в коде glsl шейдера, где создана юниформ переменная
-    unifromModel = glGetUniformLocation(Shader, "model");
-    uniformProjection = glGetUniformLocation(Shader, "projection");
 }
 
 void createShaders(){
@@ -297,7 +235,7 @@ int main(int argc, char *argv[])
         model = glm::mat4(1);
         model = glm::translate(model, glm::vec3(-triOffset, 0.0f, -2.5f));
         model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-        glUniformMatrix4fv(unifromModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(shaderlist[0]->GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
         meshlist[1]->renderMesh();
 
         glUseProgram(0);//отключаю шейдер
