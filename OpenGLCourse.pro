@@ -5,9 +5,13 @@ CONFIG -= qt
 
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        mesh.cpp \
+        shader.cpp
 LIBS +=  -lGLEW -lglfw3 -lGL -lX11 -lXi -lXrandr -lXxf86vm -lXinerama -lXcursor -lrt -lm -pthread -ldl
 
 DISTFILES +=
 
-HEADERS +=
+HEADERS += \
+    mesh.h \
+    shader.h
