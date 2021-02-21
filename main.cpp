@@ -113,7 +113,6 @@ void printMat(glm::mat4 matrix) {
 
 int main(int argc, char *argv[])
 {
-
     // Initialise GLFW
     if (!glfwInit())
     {

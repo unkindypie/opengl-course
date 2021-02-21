@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "cppbuild",
+      "label": "C/C++: g++ build",
+      "command": "/usr/bin/g++",
+      "args": [
+        "-g",
+        "mesh.cpp",
+        "shader.cpp",
+        "main.cpp",
+        "-o",
+        "${workspaceFolder}/build/a.out",
+        "-lGL",
+        "-lGLEW",
+        "-lGLU",
+        // "-lglfw3",
+        "-lglfw",
+        // "pkg-config --static --libs glfw3",
+        "-lX11",
+        "-lXxf86vm",
+        "-lXrandr",
+        "-lpthread",
+        "-lXi"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "compiler: /usr/bin/g++"
+    }
+  ]
+}
