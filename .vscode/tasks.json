@@ -7,6 +7,7 @@
       "command": "/usr/bin/g++",
       "args": [
         "-g",
+        "window.cpp",
         "mesh.cpp",
         "shader.cpp",
         "main.cpp",
