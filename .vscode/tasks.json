@@ -8,6 +8,7 @@
       "args": [
         "-g",
         "window.cpp",
+        "camera.cpp",
         "mesh.cpp",
         "shader.cpp",
         "main.cpp",

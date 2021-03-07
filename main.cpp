@@ -17,21 +17,27 @@
 #include "window.h"
 #include "mesh.h"
 #include "shader.h"
+#include "camera.h"
 
 // Window dimensions
 const GLint WIDTH = 800, HEIGHT = 600;
 const float toRadians = M_PI / 180;
 
 Window *mainWindow = nullptr;
+Camera *camera = nullptr;
+
 std::vector<Mesh *> meshlist;
 std::vector<class ::Shader *> shaderlist;
 
+GLfloat deltaTime = 0.f;
+GLfloat lastTime = 0.f;
+
 //Vertex shader
 static const char *vShader =
-    "./shaders/shader.vert";
+    "./shaders/vert.glsl";
 //Fragment shader
 static const char *fShader =
-    "./shaders/shader.frag";
+    "./shaders/frag.glsl";
 
 void createObjects()
 {
@@ -96,17 +102,32 @@ int main(int argc, char *argv[])
 {
     mainWindow = new Window(800, 600);
     mainWindow->initialize();
-
+    camera = new Camera(
+        glm::vec3(0.f, 0.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f),
+        -90.f,
+        0.f,
+        3.f,
+        0.3f
+    );
     createObjects();
     createShaders();
 
+    GLuint uniformModel = 0, uniformProjection = 0, uniformView = 0;
     glm::mat4 projection = glm::perspective(45.f, (GLfloat)mainWindow->getBufferWidth() / (GLfloat)mainWindow->getBufferHeight(), 0.1f, 100.f);
 
     // Loop until window closed
     while (!mainWindow->getShouldClose())
     {
+        GLfloat now = glfwGetTime();
+        deltaTime = now - lastTime;
+        lastTime = now;
+
         // Get + Handle user input events
         glfwPollEvents();
+
+        camera->keyControl(mainWindow->getKeys(), deltaTime);
+        camera->mouseControl(mainWindow->getXChange(), mainWindow->getYChange());
 
         // Clear window
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -114,20 +135,27 @@ int main(int argc, char *argv[])
 
         //говорю, к какому шейдеру сейчас отправлять вызовы всех шейдерных функций
         shaderlist[0]->useShader();
+        // позиции юниформов в памяти видюхи
+        uniformModel = shaderlist[0]->GetModelLocation();
+        uniformProjection = shaderlist[0]->GetProjectionLocation();
+        uniformView = shaderlist[0]->GetViewLocation();
+
 
         //создаю матрицу преобразований
-        glm::mat4 model(1); //конструктор еденичной матрицы
+        glm::mat4 model(1.0f); //конструктор еденичной матрицы
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
         //model = glm::rotate(model, curAngle * toRadians, glm::vec3(0, 1, 0));
         //model = glm::scale(model, glm::vec3(curSize, curSize, 1.0f));
         model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
         //задаю юниформ матрицы преобразований, в который отправляю указатель на матрицу преобразований
-        glUniformMatrix4fv(shaderlist[0]->GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         //юниформ матрицы проекции
-        glUniformMatrix4fv(shaderlist[0]->GetProjectionLocation(), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        // юниформ матрицы вида
+        glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera->calculateViewMatrix()));
         meshlist[0]->renderMesh();
 
-        model = glm::mat4(1);
+        model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 1.0f, -2.5f));
         model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
         glUniformMatrix4fv(shaderlist[0]->GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
@@ -138,5 +166,6 @@ int main(int argc, char *argv[])
         mainWindow->swapBuffers();
     }
     delete mainWindow;
+    delete camera;
     return 0;
 }

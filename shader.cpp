@@ -1,5 +1,4 @@
 #include "shader.h"
-#include <fstream>     
 
 
 Shader::Shader()
@@ -77,6 +76,7 @@ void Shader::compileShader(const char *vertexCode, const char *fragmentCode)
     //получаю место в коде glsl шейдера, где создана юниформ переменная
     uniformModel = glGetUniformLocation(shaderID, "model");
     uniformProjection = glGetUniformLocation(shaderID, "projection");
+    uniformView = glGetUniformLocation(shaderID, "view");
 }
 
 void Shader::addShader(GLuint program, const char *shaderCode, GLenum shaderType)
@@ -131,6 +131,11 @@ GLuint Shader::GetModelLocation()
 GLuint Shader::GetProjectionLocation()
 {
     return uniformProjection;
+}
+
+GLuint Shader::GetViewLocation()
+{
+    return uniformView;
 }
 
 Shader::~Shader()
