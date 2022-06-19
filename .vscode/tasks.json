@@ -2,30 +2,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "cppbuild",
-      "label": "C/C++: g++ build",
-      "command": "/usr/bin/g++",
-      "args": [
-        "-g",
-        "window.cpp",
-        "camera.cpp",
-        "mesh.cpp",
-        "shader.cpp",
-        "main.cpp",
-        "-o",
-        "${workspaceFolder}/build/a.out",
-        "-lGL",
-        "-lGLEW",
-        "-lGLU",
-        // "-lglfw3",
-        "-lglfw",
-        // "pkg-config --static --libs glfw3",
-        "-lX11",
-        "-lXxf86vm",
-        "-lXrandr",
-        "-lpthread",
-        "-lXi"
-      ],
+      "type": "shell",
+      "label": "Game: Build",
+      "command": "/usr/bin/g++ -g window.cpp camera.cpp mesh.cpp shader.cpp texture.cpp main.cpp -o /home/maxb/Desktop/cpp/opengl-course/build/a.out -lGL -lGLEW -lGLU -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi -lstb",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "compiler: /usr/bin/g++"
+    },
+    {
+      "type": "shell",
+      "label": "Game: Run",
+      "command": "build/a.out",
       "options": {
         "cwd": "${workspaceFolder}"
       },
