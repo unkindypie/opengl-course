@@ -4,7 +4,7 @@
     {
       "type": "shell",
       "label": "Game: Build",
-      "command": "/usr/bin/g++ -g window.cpp camera.cpp mesh.cpp shader.cpp texture.cpp main.cpp -o /home/maxb/Desktop/cpp/opengl-course/build/a.out -lGL -lGLEW -lGLU -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi -lstb",
+      "command": "/usr/bin/g++ -g window.cpp camera.cpp mesh.cpp shader.cpp texture.cpp main.cpp -o /home/maxb/Desktop/cpp/opengl-course/build/a.out -lGL -lGLEW -lGLU -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi",
       "options": {
         "cwd": "${workspaceFolder}"
       },
